@@ -1,5 +1,6 @@
 package com.example.myfirstapp
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.log
 
 
 class TaskAdapter(private val tasks:MutableList<Task>):RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
@@ -32,20 +34,27 @@ class TaskAdapter(private val tasks:MutableList<Task>):RecyclerView.Adapter<Task
             }
         }
         override fun getItemCount():Int{
-            if (tasks.isNotEmpty())return tasks.size
-            return 0
+            return tasks.size
+
         }
 
         fun addTask(task: Task) {
         tasks.add(task)
-        notifyItemInserted(tasks.size - 1)
+        notifyDataSetChanged()
         }
     private fun removeTask(position: Int) {
-        if (tasks.isNotEmpty() && position in 0 until tasks.size) {
-            tasks.removeAt(position)
-            notifyItemRemoved(position)
+        try {
+            if (tasks.isNotEmpty()) {
+                tasks.removeAt(position)
+                notifyItemRemoved(position+1)
+            }
+        } catch (e: IndexOutOfBoundsException) {
+           e.printStackTrace()
+            Log.e("TaskAdapter", "IndexOutOfBoundsException: ${e.message}")
         }
     }
+
+
 
 
 
